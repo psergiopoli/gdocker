@@ -15,7 +15,4 @@ make bi
 
 ### Usage without docker for debug and others usages
 
-With intellij in env variables set:
-- MYSQL_URL
-- MYSQL_USER
-- MYSQL_PASSWORD
+With Intellij copy content of .env file and paste in environment variables on run configuration of grails app (right of the window)
