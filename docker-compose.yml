@@ -1,0 +1,41 @@
+version: '2'
+services:
+  grails:
+    container_name: gdocker
+    command: ./wait-for-it.sh -t 0 mysql:3306
+    image: grails/gdocker:${VERSION}
+    ports:
+      - "8090:8080"
+      - "8091:8091"
+    environment:
+      ENV: dev
+      MYSQL_URL: ${MYSQL_URL}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - external_network
+    networks:
+      - bd-tier
+
+  mysql:
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    container_name: gdocker_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_URL}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    image: mysql:5.7
+    ports:
+      - "3309:3306"
+    networks:
+      - bd-tier
+    restart: on-failure:10
+    volumes:
+      - ./dbdata:/var/lib/mysql
+
+networks:
+  bd-tier:
+    driver: bridge
